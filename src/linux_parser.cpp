@@ -217,7 +217,8 @@ float LinuxParser::processCpu(int pid)
 
 
 string LinuxParser::Ram(int pid) { 
-  return string(); 
+  string mem;
+  return  mem;
 }
 
 string LinuxParser::Uid(int pid) { 
