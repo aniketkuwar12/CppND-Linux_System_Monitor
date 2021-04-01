@@ -10,24 +10,35 @@ using std::string;
 using std::to_string;
 using std::vector;
 
-// TODO: Return this process's ID
-int Process::Pid() { return 0; }
+Process::Process(int pId, 
+          string uId,
+          string cmd, 
+          float cpu, 
+          string memUsage,
+          long int uptime) : 
+          pid(pId),
+          userid(uId),
+          command(cmd),
+          cpuUsage(cpu),
+          ram(memUsage),
+          upTime(uptime)
+{
 
-// TODO: Return this process's CPU utilization
-float Process::CpuUtilization() { return 0; }
+}
 
-// TODO: Return the command that generated this process
-string Process::Command() { return string(); }
+int Process::Pid() { return pid; }
 
-// TODO: Return this process's memory utilization
-string Process::Ram() { return string(); }
+float Process::CpuUtilization() { return cpuUsage; }
 
-// TODO: Return the user (name) that generated this process
-string Process::User() { return string(); }
+string Process::Command() { return command; }
 
-// TODO: Return the age of this process (in seconds)
-long int Process::UpTime() { return 0; }
+string Process::Ram() { return ram; }
 
-// TODO: Overload the "less than" comparison operator for Process objects
-// REMOVE: [[maybe_unused]] once you define the function
-bool Process::operator<(Process const& a[[maybe_unused]]) const { return true; }
+string Process::User() { return userid; }
+
+long int Process::UpTime() { return upTime; }
+
+bool Process::operator<(Process const& that) const
+{
+    return this->cpuUsage < that.cpuUsage;
+}
