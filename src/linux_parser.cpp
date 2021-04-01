@@ -226,7 +226,8 @@ string LinuxParser::Uid(int pid) {
 }
 
 string LinuxParser::User(int pid) { 
-  return string(); 
+  string user;
+  return user;
 }
 
 long LinuxParser::UpTime(int pid) { 
