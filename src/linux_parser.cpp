@@ -212,22 +212,82 @@ string LinuxParser::Command(int pid)
 
 float LinuxParser::processCpu(int pid)
 {
-
+  return 20.5;
 }
 
 
 string LinuxParser::Ram(int pid) { 
-  string mem;
-  return  mem;
-}
-
-string LinuxParser::Uid(int pid) { 
-  return string(); 
+  string mem{"0.0"};
+  std::ifstream ifs(kProcDirectory + to_string(pid) + kStatusFilename);
+  if(ifs.is_open())
+  {
+    string line;
+    while(getline(ifs, line))
+    {
+      std::stringstream lineStream(line);
+      string key;
+      lineStream >> key;
+      
+      if(key == "VmSize:")
+      {
+        long value;
+        lineStream >> value;
+        mem = to_string(value/1000);
+        return mem;
+      }
+    }
+  }
+  return mem;
 }
 
 string LinuxParser::User(int pid) { 
-  string user;
-  return user;
+  string userid = LinuxParser::Uid(pid);
+  std::ifstream ifs(kPasswordPath);
+  string username; 
+  if(ifs.is_open())
+  {
+    string line;
+    while(getline(ifs, line))
+    {
+      std::stringstream lineStream(line);
+      string token;
+      int count = 0;
+      while(getline(lineStream, token, ':'))
+      {
+        if(count == 0)
+          username = token;
+        
+        if(count == 2 && token == userid)
+          return username;
+
+        count++;
+      }
+      username.clear();
+    }
+  }
+  return username;
+}
+
+string LinuxParser::Uid(int pid) {
+  string userid;
+  std::ifstream ifs(kProcDirectory + to_string(pid) + kStatusFilename);
+  if(ifs.is_open())
+  {
+    string line;
+    while(getline(ifs, line))
+    {
+      std::stringstream lineStream(line);
+      string key;
+      lineStream >> key;
+      
+      if(key == "Uid:")
+      {
+        lineStream >> userid;
+        return userid;
+      }
+    }
+  }
+  return userid;
 }
 
 long LinuxParser::UpTime(int pid) { 
