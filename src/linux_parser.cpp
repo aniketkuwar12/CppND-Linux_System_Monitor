@@ -115,8 +115,6 @@ long LinuxParser::Jiffies() {
   return LinuxParser::UpTime()*sysconf(_SC_CLK_TCK);
  }
 
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
-
 long LinuxParser::ActiveJiffies() { 
   vector<string> utilization = LinuxParser::CpuUtilization();
   long activeJiffies = 0;
