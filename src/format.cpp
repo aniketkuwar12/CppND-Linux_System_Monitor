@@ -1,5 +1,7 @@
 #include <string>
+#include <chrono>
 #include<iomanip>
+
 
 #include "format.h"
 
@@ -7,18 +9,22 @@ using std::string;
 
 // INPUT: Long int measuring seconds
 // OUTPUT: HH:MM:SS
-string Format::ElapsedTime(long seconds) {
+string Format::ElapsedTime(long numSeconds) {
     std::stringstream sStream;
-    int hh = seconds / 3600;
-    int mm = seconds % 3600;
-    int ss = mm % 60;
-    mm = mm / 60;
     
-    sStream << std::setw(2) << std::setfill('0') << std::to_string(hh);
-    sStream << ":";
-    sStream << std::setw(2) << std::setfill('0') << std::to_string(mm);
-    sStream << ":";
-    sStream << std::setw(2) << std::setfill('0') << std::to_string(ss);
+    std::chrono::seconds seconds{numSeconds};
+
+    std::chrono::hours hours = std::chrono::duration_cast<std::chrono::hours>(seconds);
+    seconds -= std::chrono::duration_cast<std::chrono::seconds>(hours);
+
+    std::chrono::minutes minutes = std::chrono::duration_cast<std::chrono::minutes>(seconds);
+    seconds -= std::chrono::duration_cast<std::chrono::minutes>(minutes);   
+    
+    sStream << std::setw(2) << std::setfill('0') << hours.count();
+    sStream << std::setw(1) << ":";
+    sStream << std::setw(2) << std::setfill('0') << minutes.count();
+    sStream << std::setw(1) << ":";
+    sStream << std::setw(2) << std::setfill('0') << seconds.count();
     
     return sStream.str();
 }

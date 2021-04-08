@@ -18,6 +18,7 @@ Processor& System::Cpu() { return cpu_; }
 
 void System::setProcessData() { 
     //Get Pids from LinuxParser
+    processes_.clear();
     vector<int> allPids = LinuxParser::Pids();
     for(auto eachP : allPids)
     {
@@ -36,6 +37,7 @@ void System::setProcessData() {
 }
 
 vector<Process>& System::Processes() { 
+
     this->setProcessData();
     return processes_; 
 }
