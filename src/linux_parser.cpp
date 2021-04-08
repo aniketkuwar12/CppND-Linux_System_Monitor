@@ -290,6 +290,30 @@ string LinuxParser::Uid(int pid) {
   return userid;
 }
 
-long LinuxParser::UpTime(int pid) { 
-  return 0; 
+long int LinuxParser::UpTime(int pid) { 
+  
+  std::ifstream ifs(kProcDirectory + to_string(pid) + kStatFilename);
+  long int procUptime = 0;
+
+  if(ifs.is_open())
+  {
+    string line;
+    while(getline(ifs, line))
+    {
+      std::stringstream lineStream(line);
+      string value;
+      int count = 0;
+      long pUpTime;
+      while(count < 22)
+      {
+        lineStream >> value;
+        count++;
+      }
+
+      pUpTime = stol(value);
+      procUptime = UpTime() - pUpTime/sysconf(_SC_CLK_TCK);  
+
+    }
+  }
+  return procUptime; 
 }
