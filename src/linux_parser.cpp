@@ -212,7 +212,40 @@ string LinuxParser::Command(int pid)
 
 float LinuxParser::processCpu(int pid)
 {
-  return 20.5;
+  std::ifstream ifs(kProcDirectory + to_string(pid) + kStatFilename);
+  float procCpu{0.0};
+
+  if(ifs.is_open())
+  {
+    string line;
+    while(getline(ifs, line))
+    {
+      std::stringstream lineStream(line);
+      string value;
+      int count = 0;
+      float utime, stime, cutime, cstime, starttime;
+      while(count < 22)
+      {
+        lineStream >> value;
+        if(count == 13)
+          utime = stol(value);
+        if(count == 14)
+          stime = stol(value);
+        if(count == 15)
+          cutime = stol(value);
+        if(count == 16)
+          cstime = stol(value);
+        count++;
+      }
+
+      starttime = stol(value);
+      float totaltime = utime + stime + cutime + cstime;
+      float seconds = UpTime() - starttime/sysconf(_SC_CLK_TCK);
+      procCpu = (totaltime / sysconf(_SC_CLK_TCK)) / seconds;
+
+    }
+  }
+  return procCpu;
 }
 
 
@@ -303,7 +336,7 @@ long int LinuxParser::UpTime(int pid) {
       std::stringstream lineStream(line);
       string value;
       int count = 0;
-      long pUpTime;
+      long int pUpTime;
       while(count < 22)
       {
         lineStream >> value;
